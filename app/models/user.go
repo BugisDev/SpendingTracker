@@ -6,10 +6,10 @@ import "time"
 type User struct {
 	ID                int        `json:"id"`
 	Username          string     `json:"username" sql:"not null;unique;type:varchar(64);unique_index"`
-	Password          []byte     `json:"password" sql:"not null;unique"`
+	Password          []byte     `json:"password" sql:"not null;"`
 	Email             string     `json:"email" sql:"not null;unique;type:varchar(64);unique_index"`
-	Fullname          string     `json:"full_name" sql:"not null;unique"`
-	Profile           Profile    `json:"profile"`
+	Fullname          string     `json:"full_name" sql:"not null;"`
+	Profile           Profile    `json:"profile,omitempty"`
 	CreatedAt         time.Time  `json:"-"`
 	UpdatedAt         time.Time  `json:"-"`
 	DeletedAt         *time.Time `json:"-"`
@@ -20,11 +20,11 @@ type User struct {
 // Profile Model
 // Related with User Model
 type Profile struct {
-	ID          int       `json:"id"`
-	UserID      int       `json:"userId" sql:"index"`
-	Gender      int8      `json:"gender"`
-	Address     string    `json:"address"`
-	PhoneNumber string    `json:"phone_number"`
-	BirthPlace  string    `json:"birth_place"`
-	BirthDate   time.Time `json:"birth_date"`
+	ID          int       `json:"id,omitempty"`
+	UserID      int       `json:"userId,omitempty" sql:"index"`
+	Gender      int8      `json:"gender,omitempty"`
+	Address     string    `json:"address,omitempty"`
+	PhoneNumber string    `json:"phone_number,omitempty"`
+	BirthPlace  string    `json:"birth_place,omitempty"`
+	BirthDate   time.Time `json:"birth_date,omitempty"`
 }
