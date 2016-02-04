@@ -41,3 +41,11 @@ func (c SpendingController) AddSpending() revel.Result {
 	}
 	return c.RenderJson(spending)
 }
+
+// GetAll Process, Get All Records
+func (c SpendingController) GetAll() revel.Result {
+
+	spendings, _ := forms.GetAllSpendings()
+
+	return c.RenderJson(spendings)
+}
