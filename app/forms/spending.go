@@ -3,6 +3,7 @@ package forms
 import (
 	"github.com/bugisdev/SpendingTracker/app"
 	"github.com/bugisdev/SpendingTracker/app/models"
+	"github.com/bugisdev/helper"
 	"github.com/oleiade/reflections"
 )
 
@@ -23,8 +24,8 @@ type AddSpendingForm struct {
 }
 
 // AddCategory Modules
-func (f *AddCategoryForm) AddCategory() (models.SpendingType, []app.ErrorMessage) {
-	var errorMessages []app.ErrorMessage
+func (f *AddCategoryForm) AddCategory() (models.SpendingType, []helper.ErrorMessage) {
+	var errorMessages []helper.ErrorMessage
 	var category models.SpendingType
 
 	// Check Fields
@@ -32,9 +33,9 @@ func (f *AddCategoryForm) AddCategory() (models.SpendingType, []app.ErrorMessage
 	for _, field := range fields {
 		value, _ := reflections.GetField(f.Data, field)
 		if value == "" {
-			errorMessage := app.ErrorMessage{
+			errorMessage := helper.ErrorMessage{
 				Code:    409,
-				Source:  app.SourceError{Pointer: "/data/" + field},
+				Source:  helper.SourceErrors{Pointer: "/data/" + field},
 				Title:   "Input Error",
 				Details: "Field " + field + " are empty",
 			}
@@ -50,9 +51,9 @@ func (f *AddCategoryForm) AddCategory() (models.SpendingType, []app.ErrorMessage
 	category.Description = f.Data.Description
 	err := app.DB.Create(&category).Error
 	if err != nil {
-		errorMessage := app.ErrorMessage{
+		errorMessage := helper.ErrorMessage{
 			Code:    409,
-			Source:  app.SourceError{},
+			Source:  helper.SourceErrors{},
 			Title:   "Failed Add New Category",
 			Details: err.Error(),
 		}
@@ -63,8 +64,8 @@ func (f *AddCategoryForm) AddCategory() (models.SpendingType, []app.ErrorMessage
 }
 
 // AddSpending Modules
-func (f *AddSpendingForm) AddSpending() (models.Spending, []app.ErrorMessage) {
-	var errorMessages []app.ErrorMessage
+func (f *AddSpendingForm) AddSpending() (models.Spending, []helper.ErrorMessage) {
+	var errorMessages []helper.ErrorMessage
 	var spending models.Spending
 
 	// Check Fields
@@ -72,9 +73,9 @@ func (f *AddSpendingForm) AddSpending() (models.Spending, []app.ErrorMessage) {
 	for _, field := range fields {
 		value, _ := reflections.GetField(f.Data, field)
 		if value == "" {
-			errorMessage := app.ErrorMessage{
+			errorMessage := helper.ErrorMessage{
 				Code:    409,
-				Source:  app.SourceError{Pointer: "/data/" + field},
+				Source:  helper.SourceErrors{Pointer: "/data/" + field},
 				Title:   "Input Error",
 				Details: "Field " + field + " are empty",
 			}
@@ -84,9 +85,9 @@ func (f *AddSpendingForm) AddSpending() (models.Spending, []app.ErrorMessage) {
 
 	// Check Amount
 	if f.Data.Amount == 0 {
-		errorMessage := app.ErrorMessage{
+		errorMessage := helper.ErrorMessage{
 			Code:    409,
-			Source:  app.SourceError{Pointer: "/data/Amount"},
+			Source:  helper.SourceErrors{Pointer: "/data/Amount"},
 			Title:   "Input Error",
 			Details: "Field Amount are 0",
 		}
@@ -95,9 +96,9 @@ func (f *AddSpendingForm) AddSpending() (models.Spending, []app.ErrorMessage) {
 
 	// Check Spending Type Id
 	if f.Data.SpendingTypeID == 0 {
-		errorMessage := app.ErrorMessage{
+		errorMessage := helper.ErrorMessage{
 			Code:    409,
-			Source:  app.SourceError{Pointer: "/data/SpendingTypeID"},
+			Source:  helper.SourceErrors{Pointer: "/data/SpendingTypeID"},
 			Title:   "Input Error",
 			Details: "Field SpendingTypeID are empty",
 		}
@@ -114,9 +115,9 @@ func (f *AddSpendingForm) AddSpending() (models.Spending, []app.ErrorMessage) {
 	spending.Amount = f.Data.Amount
 	err := app.DB.Create(&spending).Error
 	if err != nil {
-		errorMessage := app.ErrorMessage{
+		errorMessage := helper.ErrorMessage{
 			Code:    409,
-			Source:  app.SourceError{},
+			Source:  helper.SourceErrors{},
 			Title:   "Failed Add New Spending",
 			Details: err.Error(),
 		}
@@ -131,4 +132,17 @@ func (f *AddSpendingForm) AddSpending() (models.Spending, []app.ErrorMessage) {
 	app.DB.Model(&spending).Related(&spendingType)
 	spending.SpendingType = spendingType
 	return spending, errorMessages
+}
+
+// GetAllSpendings User Records
+func GetAllSpendings() ([]models.Spending, []helper.ErrorMessage) {
+
+	var spending models.Spending
+	var spendings []models.Spending
+	var spendingtype models.SpendingType
+
+	app.DB.Model(&spending).Find(&spendings)
+	app.DB.Model(&spending).Related(&spendingtype, "SpendingType")
+
+	return spendings, nil
 }

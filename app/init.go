@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/bugisdev/SpendingTracker/app/models"
+	"github.com/bugisdev/usermodules"
 	"github.com/revel/revel"
 )
 
@@ -27,7 +28,7 @@ func init() {
 	// ( order dependent )
 	revel.OnAppStart(func() {
 		dbm := InitDB()
-		dbm.AutoMigrate(&models.User{}, &models.Profile{}, &models.SpendingType{}, &models.Spending{})
+		dbm.AutoMigrate(&usermodules.User{}, &usermodules.Profile{}, &models.SpendingType{}, &models.Spending{})
 	})
 	// revel.OnAppStart(FillCache)
 }
