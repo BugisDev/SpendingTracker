@@ -13,13 +13,14 @@ GET     /favicon.ico                            404
 GET     /public/*filepath                       Static.Serve("public")
 
 # User Controller
-POST 	  /user/login                             UserController.Login
-POST 	  /user/register                          UserController.Register
-POST    /user/update/:id                        UserController.Update
+POST    /user/login                             UserController.Login
+POST    /user/register                          UserController.Register
+PUT     /user/:id                               UserController.Update
+GET     /user                                   UserController.GetAll
 
 # Spending Controller
-POST    /spending/category/add                  SpendingController.AddCategory
-POST    /spending/spending/add                  SpendingController.AddSpending
+POST    /spending/type                          SpendingController.AddType
+POST    /spending                               SpendingController.AddSpending
 
 # Catch all
 #*       /:controller/:action                    :controller.:action

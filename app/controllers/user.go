@@ -79,3 +79,16 @@ func (c UserController) Update(id int) revel.Result {
 
 	return c.RenderJson(user)
 }
+
+// GetAll Process
+func (c UserController) GetAll() revel.Result {
+
+	r := c.ParseRequest()
+
+	users, err := usermodules.GetAll(r.Limit, r.Offset, app.DB)
+	if err != nil {
+		return c.Redirect(400, err)
+	}
+
+	return c.RenderJson(users)
+}

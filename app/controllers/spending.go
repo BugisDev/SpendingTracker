@@ -5,6 +5,8 @@ import (
 
 	"github.com/bugisdev/SpendingTracker/app/forms"
 	"github.com/revel/revel"
+	"github.com/bugisdev/SpendingTracker/app/models"
+	"github.com/bugisdev/SpendingTracker/app"
 )
 
 // SpendingController inherit RestController
@@ -13,39 +15,32 @@ type SpendingController struct {
 	RestController
 }
 
-// AddCategory Process
-func (c SpendingController) AddCategory() revel.Result {
-	var categoryForm forms.AddCategoryForm
+// AddType Process
+func (c SpendingController) AddType() revel.Result {
+	var f forms.AddSpendingTypeForm
 	body := json.NewDecoder(c.Request.Request.Body)
-	body.Decode(&categoryForm)
+	body.Decode(&f)
 
-	category, err := categoryForm.AddCategory()
+	spendingType, err := models.NewSpendingType(f, app.DB)
 
 	if err != nil {
 		return c.Redirect(400, err)
 	}
 
-	return c.RenderJson(category)
+	return c.RenderJson(spendingType)
 }
 
 // AddSpending Process
 func (c SpendingController) AddSpending() revel.Result {
-	var spendingForm forms.AddSpendingForm
+	var f forms.AddSpendingForm
 	body := json.NewDecoder(c.Request.Request.Body)
-	body.Decode(&spendingForm)
+	body.Decode(&f)
 
-	spending, err := spendingForm.AddSpending()
+	spending, err := models.NewSpending(f, app.DB)
 
 	if err != nil {
 		return c.Redirect(400, err)
 	}
+
 	return c.RenderJson(spending)
-}
-
-// GetAll Process, Get All Records
-func (c SpendingController) GetAll() revel.Result {
-
-	spendings, _ := forms.GetAllSpendings()
-
-	return c.RenderJson(spendings)
 }
